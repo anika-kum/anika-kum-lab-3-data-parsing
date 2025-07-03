@@ -1,25 +1,4 @@
-import pandas as pd
 import string
-def test_cleaning():
-    # Task A: Load data/messy strings.csv into df raw.
-    df = pd.read_csv('/Users/anikakumar/BU RISE/Day 3/Lab/anika-kum-lab-3-data-parsing/data/messy_strings.csv')
-    print(df)
-    # Task C: Apply it: df[’clean’] = clean strings(df[’raw’])
-    df['clean'] = clean_strings(df['raw'])
-    #     Task D: Compute on df[’clean’]:
-    # - Total rows
-    # - Unique count
-    # - Most common string (value counts())
-    print(f"Total rows: {len(df['clean'])}")
-    print(f"Unique count: {df['clean'].nunique()}")
-    value_counts = df['clean'].value_counts(sort=True)
-    print(f"In the data, the commonly occuring name was: {value_counts.index[0]}") #sorted earlier
-    return df['clean'].to_csv(index=False)
-#Task B: Write clean strings(strings) that:
-    # - Strips spaces
-    # - Lower-cases
-    # - Removes punctuation (!?,.;:)
-    # - Drops empty entries
 def clean_strings(strings):
     strings = strings.dropna() # remove missing/null value cells
     strings = strings.astype(str) # cast to string type
@@ -29,4 +8,21 @@ def clean_strings(strings):
     for s in strings:
         s = s.translate(str.maketrans("","",string.punctuation))
         returnstring.append(s)
-        return returnstring
+    return returnstring
+    
+def test_special_chars():
+    assert clean_strings(['anika!', 'kumar'], 0.0) == ['anika', 'kumar']
+
+def test_casing():
+    assert clean_strings(['AnIkA', 'kUmAr'], 0.0) == ['anika', 'kumar']
+
+def test_whitespace():
+    assert clean_strings([' anika', ' kumar'], 0.0) == ['anika', 'kumar']
+    assert clean_strings([' ', ' '], 0.0) == ['', '']
+
+def test_empty():
+    assert clean_strings(['', ''], 0.0) == ['', '']
+
+
+def test_numbers():
+    assert clean_strings([1234, 1234], 0.0) == ['1234', '1234']
